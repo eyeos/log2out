@@ -1,0 +1,30 @@
+{
+  "name": "logout",
+  "version": "0.0.0",
+  "description": "log to stdout",
+  "main": "./src/lib/index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "~2.1.0",
+    "sinon": "~1.12.2",
+    "mocha": "~2.1.0"
+  },
+  "scripts": {
+    "test": "mocha -u tdd src/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/eyeos2/logout.git"
+  },
+  "keywords": [
+    "log",
+    "stdout",
+    "logger",
+    "traces"
+  ],
+  "author": "eyeos",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/eyeos2/logout/issues"
+  }
+}
