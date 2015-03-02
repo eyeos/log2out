@@ -1,0 +1,2 @@
+# logout
+log to stdout
