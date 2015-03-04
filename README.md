@@ -1,4 +1,4 @@
-# logout
+# log2out
 log to stdout
 
 # log levels
