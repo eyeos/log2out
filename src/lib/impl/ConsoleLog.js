@@ -9,6 +9,26 @@ var levels = {
     ERR: 3
 };
 
+var ConsoleLog = function ConsoleLog(name, settings, log4jsSettings) {
+    if (!(this instanceof ConsoleLog)) {
+        return new ConsoleLog(name, settings, log4jsSettings);
+    }
+
+    if (!settings) {
+        throw new Error('ConsoleLog settings object is mandatory.')
+    }
+
+    this.name = name || '';
+
+    this.level = this.calculateLevel(name, log4jsSettings);
+
+    this.debug = this.level <= levels.DEBUG ? doLog.bind(this, settings.levels.DEBUG, name, settings.separator) : doNothing;
+    this.info  = this.level <= levels.INFO  ? doLog.bind(this, settings.levels.INFO,  name, settings.separator) : doNothing;
+    this.warn  = this.level <= levels.WARN  ? doLog.bind(this, settings.levels.WARN,  name, settings.separator) : doNothing;
+    this.error = this.level <= levels.ERR   ? doLog.bind(this, settings.levels.ERROR, name, settings.separator) : doNothing;
+
+};
+
 function doLog(levelTxt, name, separator){
     if (! levelTxt) {
         levelTxt = '';
@@ -21,39 +41,23 @@ function doLog(levelTxt, name, separator){
     var timestamp = '[' + new Date().toISOString() + ']';
 
     console.log(timestamp, levelTxt, name, separator, traceTxt);
-}
-
-var ConsoleLog = function ConsoleLog(name, settings, log4jsSettings) {
-    if (!(this instanceof ConsoleLog)) {
-        return new ConsoleLog(name, settings, log4jsSettings);
-    }
-
-    if (!settings) {
-        throw new Error('ConsoleLog settings object is mandatory.')
-    }
-
-    this.name = name || '';
-
-    this.debug = doLog.bind(this, settings.levels.DEBUG, name, settings.separator);
-    this.info = doLog.bind(this, settings.levels.INFO, name, settings.separator);
-    this.warn = doLog.bind(this, settings.levels.WARN, name, settings.separator);
-    this.error = doLog.bind(this, settings.levels.ERROR, name, settings.separator);
-
-    this.level = this.calculateLevel(name, log4jsSettings);
 };
+
+function doNothing(){};
 
 ConsoleLog.prototype.calculateLevel = function(name, log4jsSettings) {
     if (! log4jsSettings) {
-        return levels['DEBUG'];
+        return levels.DEBUG;
     }
     if (log4jsSettings.levels && log4jsSettings.levels[name]) {
         var levelForThis = log4jsSettings.levels[name].toUpperCase();
-        return levels[levelForThis] || levels['DEBUG'];
+        return levels[levelForThis] || levels.DEBUG;
     }
     if (log4jsSettings.levels && log4jsSettings.levels['[all]']) {
         var levelForThis = log4jsSettings.levels['[all]'].toUpperCase();
-        return levels[levelForThis] || levels['DEBUG'];
+        return levels[levelForThis] || levels.DEBUG;
     }
+    return levels.DEBUG;
 };
 
 ConsoleLog.prototype.getLevel = function() {
