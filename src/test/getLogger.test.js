@@ -3,10 +3,8 @@
 var sinon = require('sinon');
 var assert = require('chai').assert;
 
-
 suite('log2out.getLogger.', function(){
     var sut;
-
     setup(function(){
         var log2out = require('../lib/index');
         sut = log2out.getLogger;
@@ -59,5 +57,54 @@ suite('log2out.getLogger.', function(){
         });
 
     });
+
+    suite('#getLogger and clearAppenders.', function() {
+        var sut;
+        var DummyLogger = require('../lib/impl/DummyLog');
+
+        setup(function () {
+            var log2out = require('../lib/index');
+            sut = log2out;
+        });
+
+        teardown(function(){
+            sut.enableAppenders();
+        });
+
+        test('getLogger should NOT return DummyLog when clearAppenders is NOT called', function () {
+            var aName = 'mylogger';
+
+            var logger = sut.getLogger(aName);
+
+            assert.notInstanceOf(logger, DummyLogger);
+        });
+
+        test('getLogger should return DummyLog after clearAppenders is called', function () {
+            var aName = 'mylogger';
+
+            sut.clearAppenders();
+
+            var logger = sut.getLogger(aName);
+
+            assert.instanceOf(logger, DummyLogger);
+        });
+
+        test('getLogger should NOT return DummyLog after enableAppenders is called', function () {
+            var aName = 'mylogger';
+
+            sut.clearAppenders();
+
+            var logger = sut.getLogger(aName);
+
+            assert.instanceOf(logger, DummyLogger);
+
+            sut.enableAppenders();
+
+            logger = sut.getLogger(aName);
+
+            assert.notInstanceOf(logger, DummyLogger);
+        });
+    });
+
 });
 
