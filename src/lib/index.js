@@ -2,6 +2,7 @@
 
 var ConsoleLog = require('./impl/ConsoleLog');
 var DummyLog = require('./impl/DummyLog');
+var fs = require('fs');
 
 var defaultSettings = {
     levels: {
