@@ -11,6 +11,14 @@ suite('log2out.getLogger.', function(){
     });
 
     suite('#getLogger returns a logger.', function(){
+
+		test('logger object has a trace method', function(){
+			var logger = sut();
+
+			assert.property(logger, 'trace');
+			assert.isFunction(logger.trace);
+		});
+
         test('logger object has a debug method', function(){
             var logger = sut();
 
@@ -38,6 +46,13 @@ suite('log2out.getLogger.', function(){
             assert.property(logger, 'error');
             assert.isFunction(logger.error);
         });
+
+		test('logger object has a fatal method', function(){
+			var logger = sut();
+
+			assert.property(logger, 'fatal');
+			assert.isFunction(logger.fatal);
+		});
 
         test('logger has a name', function(){
             var aName = 'mylogger';

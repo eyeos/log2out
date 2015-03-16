@@ -12,9 +12,11 @@ var DummyLog = function DummyLog(name) {
     this.name = name;
 };
 
+DummyLog.prototype.trace = doNothing;
 DummyLog.prototype.debug = doNothing;
 DummyLog.prototype.info = doNothing;
 DummyLog.prototype.warn = doNothing;
 DummyLog.prototype.error = doNothing;
+DummyLog.prototype.fatal = doNothing;
 
 module.exports = DummyLog;

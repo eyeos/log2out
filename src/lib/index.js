@@ -6,10 +6,12 @@ var fs = require('fs');
 
 var defaultSettings = {
     levels: {
+		TRACE: '[TRACE]',
         INFO: '[INFO]',
         DEBUG: '[DEBUG]',
         WARN: '[WARN]',
-        ERROR: '[ERROR]'
+        ERROR: '[ERROR]',
+		FATAL: '[FATAL]'
     },
     separator: '-'
 };

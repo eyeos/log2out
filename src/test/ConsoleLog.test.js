@@ -59,100 +59,215 @@ suite('ConsoleLog', function(){
         });
     });
 
-    suite('#log to adequate level (TEST STUBBING CONSOLE.LOG - ERRORS MAY NOT BE SEEN)', function(){
+    suite('#log to adequate level', function(){
         var systemConsoleLogSpy;
         var log4jsConfig = {
                 "levels": {
+					"fromTrace": "TRACE",
+					"fromDebug": "DEBUG",
                     "fromInfo": "INFO",
                     "fromWarn": "WARN",
-                    "fromErr": "ERR",
-                    "fromDebug": "DEBUG"
-                }
+                    "fromError": "ERROR",
+					"fromFatal": "FATAL",
+					"fromOff": "OFF"
+
+				}
             };
 
-        test('when level is "INFO", only adequate calls use console.log', function(){
-            systemConsoleLogSpy = sinon.stub(console, 'log');
-            sut = new ConsoleLog('fromInfo', log2out.settings, log4jsConfig);
+		test('when level is "TRACE", only adequate calls use console.log', function(){
+			systemConsoleLogSpy = sinon.spy(console, 'log');
+			sut = new ConsoleLog('fromTrace', log2out.settings, log4jsConfig);
+			assert.equal(sut.getLevelName(), 'TRACE');
 
-            assert.equal(sut.getLevelName(), 'INFO');
 
-            sut.debug('something');
-            assert.isFalse(systemConsoleLogSpy.called);
+			sut.trace('something');
+			assert.equal(systemConsoleLogSpy.callCount, 1);
 
-            sut.info('something');
-            assert.isTrue(systemConsoleLogSpy.calledOnce);
+			sut.debug('something');
+			assert.equal(systemConsoleLogSpy.callCount, 2);
 
-            sut.warn('something');
-            assert.isTrue(systemConsoleLogSpy.calledTwice);
+			sut.info('something');
+			assert.equal(systemConsoleLogSpy.callCount, 3);
 
-            sut.error('something');
-            assert.isTrue(systemConsoleLogSpy.calledThrice);
+			sut.warn('something');
+			assert.equal(systemConsoleLogSpy.callCount, 4);
+
+			sut.error('something');
+			assert.equal(systemConsoleLogSpy.callCount, 5);
+
+			sut.fatal('something');
+			assert.equal(systemConsoleLogSpy.callCount, 6);
+
+			systemConsoleLogSpy.restore();
+		});
+
+
+        test('when level is "DEBUG", only adequate calls use console.log', function(){
+            systemConsoleLogSpy = sinon.spy(console, 'log');
+            sut = new ConsoleLog('fromDebug', log2out.settings, log4jsConfig);
+			assert.equal(sut.getLevelName(), 'DEBUG');
+
+
+			sut.trace('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.debug('something');
+			assert.equal(systemConsoleLogSpy.callCount, 1);
+
+			sut.info('something');
+			assert.equal(systemConsoleLogSpy.callCount, 2);
+
+			sut.warn('something');
+			assert.equal(systemConsoleLogSpy.callCount, 3);
+
+			sut.error('something');
+			assert.equal(systemConsoleLogSpy.callCount, 4);
+
+			sut.fatal('something');
+			assert.equal(systemConsoleLogSpy.callCount, 5);
 
             systemConsoleLogSpy.restore();
         });
 
+		test('when level is "INFO", only adequate calls use console.log', function(){
+			systemConsoleLogSpy = sinon.spy(console, 'log');
+			sut = new ConsoleLog('fromInfo', log2out.settings, log4jsConfig);
+
+			assert.equal(sut.getLevelName(), 'INFO');
+
+
+			sut.trace('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.debug('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.info('something');
+			assert.equal(systemConsoleLogSpy.callCount, 1);
+
+			sut.warn('something');
+			assert.equal(systemConsoleLogSpy.callCount, 2);
+
+			sut.error('something');
+			assert.equal(systemConsoleLogSpy.callCount, 3);
+
+			sut.fatal('something');
+			assert.equal(systemConsoleLogSpy.callCount, 4);
+
+			systemConsoleLogSpy.restore();
+		});
+
         test('when level is "WARN", only adequate calls use console.log', function(){
-            systemConsoleLogSpy = sinon.stub(console, 'log');
+            systemConsoleLogSpy = sinon.spy(console, 'log');
             sut = new ConsoleLog('fromWarn', log2out.settings, log4jsConfig);
 
             assert.equal(sut.getLevelName(), 'WARN');
 
-            sut.debug('something');
-            assert.isFalse(systemConsoleLogSpy.called);
 
-            sut.info('something');
-            assert.isFalse(systemConsoleLogSpy.called);
+			sut.trace('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
 
-            sut.warn('something');
-            assert.isTrue(systemConsoleLogSpy.calledOnce);
+			sut.debug('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
 
-            sut.error('something');
-            assert.isTrue(systemConsoleLogSpy.calledTwice);
+			sut.info('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.warn('something');
+			assert.equal(systemConsoleLogSpy.callCount, 1);
+
+			sut.error('something');
+			assert.equal(systemConsoleLogSpy.callCount, 2);
+
+			sut.fatal('something');
+			assert.equal(systemConsoleLogSpy.callCount, 3);
 
             systemConsoleLogSpy.restore();
         });
 
         test('when level is "ERR", only adequate calls use console.log', function(){
-            systemConsoleLogSpy = sinon.stub(console, 'log');
-            sut = new ConsoleLog('fromErr', log2out.settings, log4jsConfig);
+            systemConsoleLogSpy = sinon.spy(console, 'log');
+            sut = new ConsoleLog('fromError', log2out.settings, log4jsConfig);
 
-            assert.equal(sut.getLevelName(), 'ERR');
+            assert.equal(sut.getLevelName(), 'ERROR');
 
-            sut.debug('something');
-            assert.isFalse(systemConsoleLogSpy.called);
 
-            sut.info('something');
-            assert.isFalse(systemConsoleLogSpy.called);
+			sut.trace('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
 
-            sut.warn('something');
-            assert.isFalse(systemConsoleLogSpy.called);
+			sut.debug('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
 
-            sut.error('something');
-            assert.isTrue(systemConsoleLogSpy.calledOnce);
+			sut.info('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
 
-            systemConsoleLogSpy.restore();
-        });
+			sut.warn('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
 
-        test('when level is "DEBUG", only adequate calls use console.log', function(){
-            systemConsoleLogSpy = sinon.stub(console, 'log');
-            sut = new ConsoleLog('fromDebug', log2out.settings, log4jsConfig);
+			sut.error('something');
+			assert.equal(systemConsoleLogSpy.callCount, 1);
 
-            assert.equal(sut.getLevelName(), 'DEBUG');
-
-            sut.debug('something');
-            assert.isTrue(systemConsoleLogSpy.calledOnce);
-
-            sut.info('something');
-            assert.isTrue(systemConsoleLogSpy.calledTwice);
-
-            sut.warn('something');
-            assert.isTrue(systemConsoleLogSpy.calledThrice);
-
-            sut.error('something');
-            assert.isTrue(systemConsoleLogSpy.callCount === 4);
+			sut.fatal('something');
+			assert.equal(systemConsoleLogSpy.callCount, 2);
 
             systemConsoleLogSpy.restore();
         });
+
+		test('when level is "FATAL", only adequate calls use console.log', function(){
+			systemConsoleLogSpy = sinon.spy(console, 'log');
+			sut = new ConsoleLog('fromFatal', log2out.settings, log4jsConfig);
+
+			assert.equal(sut.getLevelName(), 'FATAL');
+
+
+			sut.trace('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.debug('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.info('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.warn('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.error('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.fatal('something');
+			assert.equal(systemConsoleLogSpy.callCount, 1);
+
+			systemConsoleLogSpy.restore();
+		});
+
+		test('when level is "OFF", no one calls use console.log', function(){
+			systemConsoleLogSpy = sinon.spy(console, 'log');
+			sut = new ConsoleLog('fromOff', log2out.settings, log4jsConfig);
+
+			assert.equal(sut.getLevelName(), 'OFF');
+
+
+			sut.trace('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.debug('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.info('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.warn('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.error('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			sut.fatal('something');
+			assert.equal(systemConsoleLogSpy.callCount, 0);
+
+			systemConsoleLogSpy.restore();
+		});
+
     });
-
 });

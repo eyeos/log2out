@@ -3,10 +3,13 @@
 var format = require('util').format;
 
 var levels = {
-    DEBUG: 0,
-    INFO: 1,
-    WARN: 2,
-    ERR: 3
+	TRACE: 0,
+    DEBUG: 1,
+    INFO: 2,
+    WARN: 3,
+    ERROR: 4,
+	FATAL: 5,
+	OFF: 6
 };
 
 var ConsoleLog = function ConsoleLog(name, settings, log4jsSettings) {
@@ -22,10 +25,12 @@ var ConsoleLog = function ConsoleLog(name, settings, log4jsSettings) {
 
     this.level = this.calculateLevel(name, log4jsSettings);
 
+	this.trace = this.level <= levels.TRACE ? doLog.bind(this, settings.levels.TRACE, name, settings.separator) : doNothing;
     this.debug = this.level <= levels.DEBUG ? doLog.bind(this, settings.levels.DEBUG, name, settings.separator) : doNothing;
     this.info  = this.level <= levels.INFO  ? doLog.bind(this, settings.levels.INFO,  name, settings.separator) : doNothing;
     this.warn  = this.level <= levels.WARN  ? doLog.bind(this, settings.levels.WARN,  name, settings.separator) : doNothing;
-    this.error = this.level <= levels.ERR   ? doLog.bind(this, settings.levels.ERROR, name, settings.separator) : doNothing;
+    this.error = this.level <= levels.ERROR ? doLog.bind(this, settings.levels.ERROR, name, settings.separator) : doNothing;
+	this.fatal = this.level <= levels.FATAL ? doLog.bind(this, settings.levels.FATAL, name, settings.separator) : doNothing;
 
 };
 
@@ -51,11 +56,11 @@ ConsoleLog.prototype.calculateLevel = function(name, log4jsSettings) {
     }
     if (log4jsSettings.levels && log4jsSettings.levels[name]) {
         var levelForThis = log4jsSettings.levels[name].toUpperCase();
-        return levels[levelForThis] || levels.DEBUG;
+        return (levels[levelForThis] == null)? levels.DEBUG: levels[levelForThis];
     }
     if (log4jsSettings.levels && log4jsSettings.levels['[all]']) {
         var levelForThis = log4jsSettings.levels['[all]'].toUpperCase();
-        return levels[levelForThis] || levels.DEBUG;
+		return (levels[levelForThis] == null)? levels.DEBUG: levels[levelForThis];
     }
     return levels.DEBUG;
 };
