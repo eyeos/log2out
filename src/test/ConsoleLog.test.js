@@ -9,6 +9,8 @@ var log2out = require('../lib/index');
 var path = require('path');
 var fs = require('fs');
 
+var FormaterFactory = require('../lib/formaters/FormaterFactory');
+
 suite('ConsoleLog', function(){
     var sut;
 
@@ -270,4 +272,29 @@ suite('ConsoleLog', function(){
 		});
 
     });
+
+	suite('#formaters', function(){
+		var sut;
+		var log4jsConfig, formatedText, dummyFormater;
+
+		setup(function() {
+			formatedText = 'Formated text';
+			dummyFormater = {format: function() {return formatedText}};
+			sinon.stub(FormaterFactory, 'getInstance').returns(dummyFormater);
+			log4jsConfig = {
+				"levels": {
+					"[all]": "INFO"
+				}
+			}
+			sut = new ConsoleLog('formaterTest', log2out.settings, log4jsConfig, FormaterFactory);
+		});
+
+		test('If a formater is set should log the text returned by the formater', function(){
+			var systemConsoleLogSpy = sinon.spy(console, 'log');
+			sut.setFormater('DummyFormater');
+			sut.info('something');
+			sinon.assert.calledWithExactly(systemConsoleLogSpy, formatedText);
+		});
+
+	});
 });

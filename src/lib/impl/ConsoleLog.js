@@ -12,7 +12,7 @@ var levels = {
 	OFF: 6
 };
 
-var ConsoleLog = function ConsoleLog(name, settings, log4jsSettings) {
+var ConsoleLog = function ConsoleLog(name, settings, log4jsSettings, FormaterFactory) {
     if (!(this instanceof ConsoleLog)) {
         return new ConsoleLog(name, settings, log4jsSettings);
     }
@@ -32,6 +32,8 @@ var ConsoleLog = function ConsoleLog(name, settings, log4jsSettings) {
     this.error = this.level <= levels.ERROR ? doLog.bind(this, settings.levels.ERROR, name, settings.separator) : doNothing;
 	this.fatal = this.level <= levels.FATAL ? doLog.bind(this, settings.levels.FATAL, name, settings.separator) : doNothing;
 
+    this.FormaterFactory = FormaterFactory || require('../formaters/FormaterFactory');
+    this.formater = null;
 };
 
 function doLog(levelTxt, name, separator){
@@ -42,10 +44,15 @@ function doLog(levelTxt, name, separator){
         name = '';
     }
     var extraArgs = Array.prototype.slice.call(arguments, 3);
-    var traceTxt = format.apply(null, extraArgs);
-    var timestamp = '[' + new Date().toISOString() + ']';
+    if (this.formater) {
+        var text = this.formater.format(levelTxt, name, extraArgs);
+        console.log(text);
+    } else {
+        var traceTxt = format.apply(null, extraArgs);
+        var timestamp = '[' + new Date().toISOString() + ']';
+        console.log(timestamp, levelTxt, name, separator, traceTxt);
+    }
 
-    console.log(timestamp, levelTxt, name, separator, traceTxt);
 };
 
 function doNothing(){};
@@ -63,6 +70,10 @@ ConsoleLog.prototype.calculateLevel = function(name, log4jsSettings) {
 		return (levels[levelForThis] == null)? levels.DEBUG: levels[levelForThis];
     }
     return levels.DEBUG;
+};
+
+ConsoleLog.prototype.setFormater = function(formater) {
+    this.formater = this.FormaterFactory.getInstance(formater);
 };
 
 ConsoleLog.prototype.getLevel = function() {
