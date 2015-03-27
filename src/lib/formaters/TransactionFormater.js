@@ -2,10 +2,11 @@ var TransactionFormater = function(timestamp) {
     this.timestamp = timestamp || require('internet-timestamp');
 };
 
-TransactionFormater.prototype.format = function(level, name) {
-    var message = Array.prototype.slice.call(arguments, 2, arguments.length - 2);
-    var tid = arguments[arguments.length - 2];
-    var sid = arguments[arguments.length - 1];
+TransactionFormater.prototype.format = function(level, name, extraArgs) {
+    console.log(arguments);
+    var message = Array.prototype.slice.call(extraArgs, 0, extraArgs.length - 2);
+    var tid = extraArgs[extraArgs.length - 2];
+    var sid = extraArgs[extraArgs.length - 1];
     return this.timestamp(new Date()) + '|' + level + '|TID=' + tid + '|SID=' + sid + '| ' + message.join(' ');
 };
 

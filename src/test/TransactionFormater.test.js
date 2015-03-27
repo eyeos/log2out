@@ -26,14 +26,14 @@ suite('TransactionFormater', function () {
         test('When called with correct parameters should return correctly formated text', function(){
             var expectedText = timestamp + '|' + level + '|TID=' + tid + '|SID=' + sid + '| ' + message3;
             timestampStub.returns(timestamp);
-            var actualText = sut.format(level, name, message3, tid, sid);
+            var actualText = sut.format(level, name, [message3, tid, sid]);
             assert.equal(expectedText, actualText, 'Invalid formated text');
         });
 
         test('When called with correct parameters should return correctly formated text even if the message is in more than one parameter', function(){
             var expectedText = timestamp + '|' + level + '|TID=' + tid + '|SID=' + sid + '| ' + message1 + ' ' + message2 + ' ' + message3;
             timestampStub.returns(timestamp);
-            var actualText = sut.format(level, name, message1, message2, message3, tid, sid);
+            var actualText = sut.format(level, name, [message1, message2, message3, tid, sid]);
             assert.equal(expectedText, actualText, 'Invalid formated text');
         });
 
