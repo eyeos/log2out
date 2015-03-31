@@ -3,7 +3,6 @@ var TransactionFormater = function(timestamp) {
 };
 
 TransactionFormater.prototype.format = function(level, name, extraArgs) {
-    console.log(arguments);
     var message = Array.prototype.slice.call(extraArgs, 0, extraArgs.length - 2);
     var tid = extraArgs[extraArgs.length - 2];
     var sid = extraArgs[extraArgs.length - 1];
