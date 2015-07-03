@@ -12,11 +12,11 @@ var DummyLog = function DummyLog(name) {
     this.name = name;
 };
 
-DummyLog.prototype.trace = doNothing;
-DummyLog.prototype.debug = doNothing;
-DummyLog.prototype.info = doNothing;
-DummyLog.prototype.warn = doNothing;
-DummyLog.prototype.error = doNothing;
-DummyLog.prototype.fatal = doNothing;
+// copy ConsoleLog public interface, but doing nothing
+var ConsoleLog = require('./ConsoleLog');
+var conlogInstance = new ConsoleLog('dummy', {levels: {TRACE: '',INFO: '',DEBUG: '',WARN: '',ERROR: '',FATAL: ''},separator: ''});
+for (var fnName in conlogInstance){
+    DummyLog.prototype[fnName] = doNothing;
+};
 
 module.exports = DummyLog;
