@@ -1,6 +1,6 @@
 {
   "name": "log2out",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "log to stdout",
   "main": "./src/lib/index.js",
   "dependencies": {
