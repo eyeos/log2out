@@ -26,7 +26,7 @@ function getLog4jsConfigFromEnvar() {
 
 var defaultLog4jsConfig = getLog4jsConfigFromEnvar() || {
         'levels': {
-            '[all]': 'DEBUG'
+            '[all]': process.env.EYEOS_LOG_LEVEL || 'DEBUG'
         }
 };
 
