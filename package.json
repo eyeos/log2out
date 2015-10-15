@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/eyeos2/log2out.git"
+    "url": "git://github.com/eyeos/log2out.git"
   },
   "keywords": [
     "log",
@@ -27,6 +27,6 @@
   "author": "eyeos",
   "license": "Apache 2.0",
   "bugs": {
-    "url": "https://github.com/eyeos2/logi2out/issues"
+    "url": "https://github.com/eyeos/log2out/issues"
   }
 }
