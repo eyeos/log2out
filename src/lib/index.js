@@ -2,7 +2,7 @@
 
 var ConsoleLog = require('./impl/ConsoleLog');
 var DummyLog = require('./impl/DummyLog');
-var fs = require('fs');
+var Log4jsConfigReader = require('./tools/Log4JsConfigReader');
 
 var defaultSettings = {
 	levels: {
@@ -16,20 +16,6 @@ var defaultSettings = {
 	separator: '-'
 };
 
-function getLog4jsConfigFromEnvar () {
-	var filename = process.env.LOG4JS_CONFIG;
-	if (filename) {
-		return JSON.parse(fs.readFileSync(filename, "utf8"));
-	}
-	return undefined;
-}
-
-var defaultLog4jsConfig = getLog4jsConfigFromEnvar() || {
-		'levels': {
-			'[all]': process.env.EYEOS_LOG_LEVEL || 'DEBUG'
-		}
-	};
-
 var returnDummyLogger = false;
 
 function getLogger (name, settings, log4jsConfig) {
@@ -37,7 +23,7 @@ function getLogger (name, settings, log4jsConfig) {
 		settings = defaultSettings;
 	}
 	if (!log4jsConfig) {
-		log4jsConfig = defaultLog4jsConfig;
+		log4jsConfig = Log4jsConfigReader.getDefaultConfig();
 	}
 
 	if (returnDummyLogger) {
