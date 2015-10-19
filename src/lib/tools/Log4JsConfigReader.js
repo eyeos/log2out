@@ -5,21 +5,19 @@ function Log4JsConfigReader () {
 }
 
 Log4JsConfigReader.prototype.getDefaultConfig = function () {
-	return defaultLog4jsConfig
+	return this._getLog4jsConfigFromEnvar() || {
+			'levels': {
+				'[all]': process.env.EYEOS_LOG_LEVEL || 'DEBUG'
+			}
+		};
 };
 
-function getLog4jsConfigFromEnvar () {
 	var filename = process.env.LOG4JS_CONFIG;
+Log4JsConfigReader.prototype._getLog4jsConfigFromEnvar = function () {
 	if (filename) {
 		return JSON.parse(fs.readFileSync(filename, "utf8"));
 	}
 	return undefined;
-}
-
-var defaultLog4jsConfig = getLog4jsConfigFromEnvar() || {
-		'levels': {
-			'[all]': process.env.EYEOS_LOG_LEVEL || 'DEBUG'
-		}
-	};
+};
 
 module.exports = Log4JsConfigReader;
