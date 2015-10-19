@@ -4,6 +4,8 @@ var ConsoleLog = require('./impl/ConsoleLog');
 var DummyLog = require('./impl/DummyLog');
 var Log4jsConfigReader = require('./tools/Log4JsConfigReader');
 
+var log4jsConfigReader = new Log4jsConfigReader();
+
 var defaultSettings = {
 	levels: {
 		TRACE: '[TRACE]',
@@ -23,7 +25,7 @@ function getLogger (name, settings, log4jsConfig) {
 		settings = defaultSettings;
 	}
 	if (!log4jsConfig) {
-		log4jsConfig = Log4jsConfigReader.getDefaultConfig();
+		log4jsConfig = log4jsConfigReader.getDefaultConfig();
 	}
 
 	if (returnDummyLogger) {

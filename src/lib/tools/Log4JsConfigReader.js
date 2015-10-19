@@ -1,5 +1,13 @@
 var fs = require('fs');
 
+function Log4JsConfigReader () {
+
+}
+
+Log4JsConfigReader.prototype.getDefaultConfig = function () {
+	return defaultLog4jsConfig
+};
+
 function getLog4jsConfigFromEnvar () {
 	var filename = process.env.LOG4JS_CONFIG;
 	if (filename) {
@@ -14,10 +22,4 @@ var defaultLog4jsConfig = getLog4jsConfigFromEnvar() || {
 		}
 	};
 
-function getDefaultConfig () {
-	return defaultLog4jsConfig
-};
-
-module.exports = {
-	getDefaultConfig: getDefaultConfig
-};
+module.exports = Log4JsConfigReader;
