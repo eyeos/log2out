@@ -9,7 +9,7 @@ var log2out = require('../lib/index');
 var path = require('path');
 var fs = require('fs');
 
-var FormaterFactory = require('../lib/formaters/FormaterFactory');
+var FormatterFactory = require('../lib/formatters/FormatterFactory');
 
 suite('ConsoleLog', function () {
 	var sut;
@@ -273,31 +273,31 @@ suite('ConsoleLog', function () {
 
 	});
 
-	suite('#formaters', function () {
+	suite('#formatters', function () {
 		var sut;
-		var log4jsConfig, formatedText, dummyFormater;
+		var log4jsConfig, formattedText, dummyFormatter;
 
 		setup(function () {
-			formatedText = 'Formated text';
-			dummyFormater = {
+			formattedText = 'Formatted text';
+			dummyFormatter = {
 				format: function () {
-					return formatedText
+					return formattedText
 				}
 			};
-			sinon.stub(FormaterFactory, 'getInstance').returns(dummyFormater);
+			sinon.stub(FormatterFactory, 'getInstance').returns(dummyFormatter);
 			log4jsConfig = {
 				"levels": {
 					"[all]": "INFO"
 				}
 			}
-			sut = new ConsoleLog('formaterTest', log2out.settings, log4jsConfig, FormaterFactory);
+			sut = new ConsoleLog('formatterTest', log2out.settings, log4jsConfig, FormatterFactory);
 		});
 
-		test('If a formater is set should log the text returned by the formater', function () {
+		test('If a formatter is set should log the text returned by the formatter', function () {
 			var systemConsoleLogSpy = sinon.spy(console, 'log');
-			sut.setFormater('DummyFormater');
+			sut.setFormatter('DummyFormatter');
 			sut.info('something');
-			sinon.assert.calledWithExactly(systemConsoleLogSpy, formatedText);
+			sinon.assert.calledWithExactly(systemConsoleLogSpy, formattedText);
 		});
 
 	});
