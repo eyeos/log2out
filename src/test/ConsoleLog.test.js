@@ -6,9 +6,6 @@ var assert = require('chai').assert;
 var ConsoleLog = require('../lib/impl/ConsoleLog');
 var log2out = require('../lib/index');
 
-var path = require('path');
-var fs = require('fs');
-
 var FormaterFactory = require('../lib/formaters/FormaterFactory');
 
 suite('ConsoleLog', function () {
