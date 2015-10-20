@@ -230,7 +230,7 @@ suite('ConsoleLog', function () {
 			assert.equal(systemConsoleLogSpy.callCount, 0);
 		});
 
-		suite('#configureLogger', function () {
+		suite('#setLevelName', function () {
 			setup(function () {
 				sut = new ConsoleLog('fromWarn', log2out.settings, 'WARN');
 			});
@@ -244,7 +244,7 @@ suite('ConsoleLog', function () {
 				assert.equal(systemConsoleLogSpy.callCount, 1);
 
 				// test begins here
-				sut.configureLogger('INFO');
+				sut.setLevelName('INFO');
 
 				// now should log from info, warn, ..., but not debug or lower
 				sut.info('some info after setting INFO');
@@ -264,7 +264,7 @@ suite('ConsoleLog', function () {
 				assert.equal(systemConsoleLogSpy.callCount, 2);
 
 				// test begins here
-				sut.configureLogger('ERROR');
+				sut.setLevelName('ERROR');
 
 				// now should not log warn but should continue logging error
 				sut.warn('some warn after setting ERROR');

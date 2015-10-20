@@ -16,13 +16,13 @@ var ConsoleLog = function ConsoleLog (loggerName, settings, levelName, FormaterF
 	this.loggerName = loggerName || '';
 	this.settings = settings;
 
-	this.configureLogger(levelName);
+	this.setLevelName(levelName);
 
 	this.FormaterFactory = FormaterFactory || require('../formaters/FormaterFactory');
 	this.formater = null;
 };
 
-ConsoleLog.prototype.configureLogger = function (levelName) {
+ConsoleLog.prototype.setLevelName = function (levelName) {
 	var settings = this.settings;
 	levelName = levelName || 'DEBUG';
 	this.level = levels[levelName.toUpperCase()] === undefined ? levels.DEBUG : levels[levelName.toUpperCase()];
