@@ -2,15 +2,7 @@
 
 var format = require('util').format;
 
-var levels = {
-	TRACE: 0,
-	DEBUG: 1,
-	INFO: 2,
-	WARN: 3,
-	ERROR: 4,
-	FATAL: 5,
-	OFF: 6
-};
+var levels = require('../levels');
 
 var ConsoleLog = function ConsoleLog (loggerName, settings, log4jsSettings, FormaterFactory) {
 	if (!(this instanceof ConsoleLog)) {
