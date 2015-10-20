@@ -23,7 +23,7 @@ var ConsoleLog = function ConsoleLog (name, settings, log4jsSettings, FormatterF
 
 	this.name = name || '';
 
-	this.level = this.calculateLevel(name, log4jsSettings);
+	this.level = calculateLevel(name, log4jsSettings);
 
 	this.trace = this.level <= levels.TRACE ? doLog.bind(this, settings.levels.TRACE, name, settings.separator) : doNothing;
 	this.debug = this.level <= levels.DEBUG ? doLog.bind(this, settings.levels.DEBUG, name, settings.separator) : doNothing;
@@ -58,7 +58,7 @@ function doLog (levelTxt, name, separator) {
 function doNothing () {
 };
 
-ConsoleLog.prototype.calculateLevel = function (name, log4jsSettings) {
+function calculateLevel (name, log4jsSettings) {
 	if (!log4jsSettings) {
 		return levels.DEBUG;
 	}
@@ -71,7 +71,7 @@ ConsoleLog.prototype.calculateLevel = function (name, log4jsSettings) {
 		return (levels[levelForThis] == null) ? levels.DEBUG : levels[levelForThis];
 	}
 	return levels.DEBUG;
-};
+}
 
 ConsoleLog.prototype.setFormatter = function (formatter) {
 	this.formatter = this.FormatterFactory.getInstance(formatter);
