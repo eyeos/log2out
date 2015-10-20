@@ -22,7 +22,16 @@ var ConsoleLog = function ConsoleLog (loggerName, settings, log4jsSettings, Form
 	}
 
 	this.loggerName = loggerName || '';
+	this.settings = settings;
 
+	this.configureLogger(log4jsSettings);
+
+	this.FormatterFactory = FormatterFactory || require('../formatters/FormatterFactory');
+	this.formatter = null;
+};
+
+ConsoleLog.prototype.configureLogger = function (log4jsSettings) {
+	var settings = this.settings;
 	this.level = calculateLevel(this.loggerName, log4jsSettings);
 
 	this.trace = this.level <= levels.TRACE ? doLog.bind(this, settings.levels.TRACE, this.loggerName, settings.separator) : doNothing;
@@ -31,9 +40,6 @@ var ConsoleLog = function ConsoleLog (loggerName, settings, log4jsSettings, Form
 	this.warn = this.level <= levels.WARN ? doLog.bind(this, settings.levels.WARN, this.loggerName, settings.separator) : doNothing;
 	this.error = this.level <= levels.ERROR ? doLog.bind(this, settings.levels.ERROR, this.loggerName, settings.separator) : doNothing;
 	this.fatal = this.level <= levels.FATAL ? doLog.bind(this, settings.levels.FATAL, this.loggerName, settings.separator) : doNothing;
-
-	this.FormatterFactory = FormatterFactory || require('../formatters/FormatterFactory');
-	this.formatter = null;
 };
 
 function doLog (levelTxt, loggerName, separator) {
