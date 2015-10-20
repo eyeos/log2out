@@ -12,45 +12,45 @@ var levels = {
 	OFF: 6
 };
 
-var ConsoleLog = function ConsoleLog (name, settings, log4jsSettings, FormatterFactory) {
+var ConsoleLog = function ConsoleLog (loggerName, settings, log4jsSettings, FormatterFactory) {
 	if (!(this instanceof ConsoleLog)) {
-		return new ConsoleLog(name, settings, log4jsSettings);
+		return new ConsoleLog(loggerName, settings, log4jsSettings);
 	}
 
 	if (!settings) {
 		throw new Error('ConsoleLog settings object is mandatory.')
 	}
 
-	this.name = name || '';
+	this.loggerName = loggerName || '';
 
-	this.level = calculateLevel(name, log4jsSettings);
+	this.level = calculateLevel(this.loggerName, log4jsSettings);
 
-	this.trace = this.level <= levels.TRACE ? doLog.bind(this, settings.levels.TRACE, name, settings.separator) : doNothing;
-	this.debug = this.level <= levels.DEBUG ? doLog.bind(this, settings.levels.DEBUG, name, settings.separator) : doNothing;
-	this.info = this.level <= levels.INFO ? doLog.bind(this, settings.levels.INFO, name, settings.separator) : doNothing;
-	this.warn = this.level <= levels.WARN ? doLog.bind(this, settings.levels.WARN, name, settings.separator) : doNothing;
-	this.error = this.level <= levels.ERROR ? doLog.bind(this, settings.levels.ERROR, name, settings.separator) : doNothing;
-	this.fatal = this.level <= levels.FATAL ? doLog.bind(this, settings.levels.FATAL, name, settings.separator) : doNothing;
+	this.trace = this.level <= levels.TRACE ? doLog.bind(this, settings.levels.TRACE, this.loggerName, settings.separator) : doNothing;
+	this.debug = this.level <= levels.DEBUG ? doLog.bind(this, settings.levels.DEBUG, this.loggerName, settings.separator) : doNothing;
+	this.info = this.level <= levels.INFO ? doLog.bind(this, settings.levels.INFO, this.loggerName, settings.separator) : doNothing;
+	this.warn = this.level <= levels.WARN ? doLog.bind(this, settings.levels.WARN, this.loggerName, settings.separator) : doNothing;
+	this.error = this.level <= levels.ERROR ? doLog.bind(this, settings.levels.ERROR, this.loggerName, settings.separator) : doNothing;
+	this.fatal = this.level <= levels.FATAL ? doLog.bind(this, settings.levels.FATAL, this.loggerName, settings.separator) : doNothing;
 
 	this.FormatterFactory = FormatterFactory || require('../formatters/FormatterFactory');
 	this.formatter = null;
 };
 
-function doLog (levelTxt, name, separator) {
+function doLog (levelTxt, loggerName, separator) {
 	if (!levelTxt) {
 		levelTxt = '';
 	}
-	if (!name) {
-		name = '';
+	if (!loggerName) {
+		loggerName = '';
 	}
 	var extraArgs = Array.prototype.slice.call(arguments, 3);
 	if (this.formatter) {
-		var text = this.formatter.format(levelTxt, name, extraArgs);
+		var text = this.formatter.format(levelTxt, loggerName, extraArgs);
 		console.log(text);
 	} else {
 		var traceTxt = format.apply(null, extraArgs);
 		var timestamp = '[' + new Date().toISOString() + ']';
-		console.log(timestamp, levelTxt, name, separator, traceTxt);
+		console.log(timestamp, levelTxt, loggerName, separator, traceTxt);
 	}
 
 };
@@ -58,12 +58,12 @@ function doLog (levelTxt, name, separator) {
 function doNothing () {
 };
 
-function calculateLevel (name, log4jsSettings) {
+function calculateLevel (loggerName, log4jsSettings) {
 	if (!log4jsSettings) {
 		return levels.DEBUG;
 	}
-	if (log4jsSettings.levels && log4jsSettings.levels[name]) {
-		var levelForThis = log4jsSettings.levels[name].toUpperCase();
+	if (log4jsSettings.levels && log4jsSettings.levels[loggerName]) {
+		var levelForThis = log4jsSettings.levels[loggerName].toUpperCase();
 		return (levels[levelForThis] == null) ? levels.DEBUG : levels[levelForThis];
 	}
 	if (log4jsSettings.levels && log4jsSettings.levels['[all]']) {

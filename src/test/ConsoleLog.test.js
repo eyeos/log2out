@@ -21,12 +21,12 @@ suite('ConsoleLog', function () {
 
 	suite('#name', function () {
 		test('logger name should be established on constructor', function () {
-			assert(sut.name === 'test')
+			assert(sut.loggerName === 'test')
 		});
 
 		test('logger default name is ""', function () {
 			sut = new ConsoleLog(undefined, log2out.settings);
-			assert(sut.name === '')
+			assert(sut.loggerName === '')
 		});
 	});
 

@@ -59,7 +59,7 @@ suite('log2out.getLogger.', function () {
 
 			var logger = sut(aName);
 
-			assert.equal(logger.name, aName);
+			assert.equal(logger.loggerName, aName);
 		});
 
 		test('logger object is unique for each call', function () {
