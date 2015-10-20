@@ -1,7 +1,6 @@
 'use strict';
 
 var format = require('util').format;
-
 var levels = require('../levels');
 
 var ConsoleLog = function ConsoleLog (loggerName, settings, levelName, FormaterFactory) {
@@ -51,12 +50,10 @@ function doLog (levelTxt, loggerName, separator) {
 		var timestamp = '[' + new Date().toISOString() + ']';
 		console.log(timestamp, levelTxt, loggerName, separator, traceTxt);
 	}
-
-};
+}
 
 function doNothing () {
-};
-
+}
 
 ConsoleLog.prototype.setFormater = function (formater) {
 	this.formater = this.FormaterFactory.getInstance(formater);
