@@ -258,6 +258,51 @@ suite('ConsoleLog', function () {
 			assert.equal(systemConsoleLogSpy.callCount, 0);
 		});
 
+		suite('#configureLogger', function () {
+			setup(function () {
+				sut = new ConsoleLog('fromWarn', log2out.settings, log4jsConfig);
+			});
+
+			test('when configuring with lower priority it logs adequately', function () {
+				// GUARDS
+				// assert logging warn but not info
+				sut.info('some info');
+				assert.equal(systemConsoleLogSpy.callCount, 0);
+				sut.warn('some warn');
+				assert.equal(systemConsoleLogSpy.callCount, 1);
+
+				// test begins here
+				log4jsConfig['levels']['fromWarn'] = 'INFO';
+				sut.configureLogger(log4jsConfig);
+
+				// now should log from info, warn, ..., but not debug or lower
+				sut.info('some info after setting INFO');
+				assert.equal(systemConsoleLogSpy.callCount, 2);
+				sut.warn('some warn after setting INFO');
+				assert.equal(systemConsoleLogSpy.callCount, 3);
+				sut.debug('some debug after setting INFO');
+				assert.equal(systemConsoleLogSpy.callCount, 3);
+			});
+
+			test('when configuring with higher priority it logs adequately', function () {
+				// GUARDS
+				// assert logging warn and error
+				sut.warn('some warn');
+				assert.equal(systemConsoleLogSpy.callCount, 1);
+				sut.error('some error');
+				assert.equal(systemConsoleLogSpy.callCount, 2);
+
+				// test begins here
+				log4jsConfig['levels']['fromWarn'] = 'ERROR';
+				sut.configureLogger(log4jsConfig);
+
+				// now should not log warn but should continue logging error
+				sut.warn('some warn after setting ERROR');
+				assert.equal(systemConsoleLogSpy.callCount, 2);
+				sut.error('some error after setting ERROR');
+				assert.equal(systemConsoleLogSpy.callCount, 3);
+			});
+		});
 	});
 
 	suite('#formaters', function () {
