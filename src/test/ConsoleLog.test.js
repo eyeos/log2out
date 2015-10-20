@@ -28,15 +28,8 @@ suite('ConsoleLog', function () {
 	});
 
 	suite('#level', function () {
-		var log4jsConfig;
 
 		setup(function () {
-			log4jsConfig = {
-				"levels": {
-					"test": "INFO",
-					"[all]": "WARN"
-				}
-			}
 		});
 
 		test('default level is "DEBUG"', function () {
@@ -45,33 +38,15 @@ suite('ConsoleLog', function () {
 			assert.equal(sut.getLevelName(), 'DEBUG')
 		});
 
-		test('level can be set with log4js-like configuration', function () {
-			sut = new ConsoleLog('test', log2out.settings, log4jsConfig);
-
+		test('level can be set in constructor', function () {
+			sut = new ConsoleLog('test', log2out.settings, 'INFO');
 			assert.equal(sut.getLevelName(), 'INFO')
 		});
 
-		test('level can be set with log4js-like configuration, default level is set in "[all]"', function () {
-			sut = new ConsoleLog('another-one', log2out.settings, log4jsConfig);
-
-			assert.equal(sut.getLevelName(), 'WARN');
-		});
 	});
 
 	suite('#log to adequate level', function () {
 		var systemConsoleLogSpy;
-		var log4jsConfig = {
-			"levels": {
-				"fromTrace": "TRACE",
-				"fromDebug": "DEBUG",
-				"fromInfo": "INFO",
-				"fromWarn": "WARN",
-				"fromError": "ERROR",
-				"fromFatal": "FATAL",
-				"fromOff": "OFF"
-
-			}
-		};
 
 		setup(function () {
 			systemConsoleLogSpy = sinon.spy(console, 'log');
@@ -82,7 +57,7 @@ suite('ConsoleLog', function () {
 		});
 
 		test('when level is "TRACE", only adequate calls use console.log', function () {
-			sut = new ConsoleLog('fromTrace', log2out.settings, log4jsConfig);
+			sut = new ConsoleLog('fromTrace', log2out.settings, 'TRACE');
 			assert.equal(sut.getLevelName(), 'TRACE');
 
 
@@ -107,7 +82,7 @@ suite('ConsoleLog', function () {
 
 
 		test('when level is "DEBUG", only adequate calls use console.log', function () {
-			sut = new ConsoleLog('fromDebug', log2out.settings, log4jsConfig);
+			sut = new ConsoleLog('fromDebug', log2out.settings, 'DEBUG');
 			assert.equal(sut.getLevelName(), 'DEBUG');
 
 
@@ -131,7 +106,7 @@ suite('ConsoleLog', function () {
 		});
 
 		test('when level is "INFO", only adequate calls use console.log', function () {
-			sut = new ConsoleLog('fromInfo', log2out.settings, log4jsConfig);
+			sut = new ConsoleLog('fromInfo', log2out.settings, 'INFO');
 
 			assert.equal(sut.getLevelName(), 'INFO');
 
@@ -156,7 +131,7 @@ suite('ConsoleLog', function () {
 		});
 
 		test('when level is "WARN", only adequate calls use console.log', function () {
-			sut = new ConsoleLog('fromWarn', log2out.settings, log4jsConfig);
+			sut = new ConsoleLog('fromWarn', log2out.settings, 'WARN');
 
 			assert.equal(sut.getLevelName(), 'WARN');
 
@@ -181,7 +156,7 @@ suite('ConsoleLog', function () {
 		});
 
 		test('when level is "ERR", only adequate calls use console.log', function () {
-			sut = new ConsoleLog('fromError', log2out.settings, log4jsConfig);
+			sut = new ConsoleLog('fromError', log2out.settings, 'ERROR');
 
 			assert.equal(sut.getLevelName(), 'ERROR');
 
@@ -206,7 +181,7 @@ suite('ConsoleLog', function () {
 		});
 
 		test('when level is "FATAL", only adequate calls use console.log', function () {
-			sut = new ConsoleLog('fromFatal', log2out.settings, log4jsConfig);
+			sut = new ConsoleLog('fromFatal', log2out.settings, 'FATAL');
 
 			assert.equal(sut.getLevelName(), 'FATAL');
 
@@ -231,7 +206,7 @@ suite('ConsoleLog', function () {
 		});
 
 		test('when level is "OFF", no one calls use console.log', function () {
-			sut = new ConsoleLog('fromOff', log2out.settings, log4jsConfig);
+			sut = new ConsoleLog('fromOff', log2out.settings, 'OFF');
 
 			assert.equal(sut.getLevelName(), 'OFF');
 
@@ -257,7 +232,7 @@ suite('ConsoleLog', function () {
 
 		suite('#configureLogger', function () {
 			setup(function () {
-				sut = new ConsoleLog('fromWarn', log2out.settings, log4jsConfig);
+				sut = new ConsoleLog('fromWarn', log2out.settings, 'WARN');
 			});
 
 			test('when configuring with lower priority it logs adequately', function () {
@@ -269,8 +244,7 @@ suite('ConsoleLog', function () {
 				assert.equal(systemConsoleLogSpy.callCount, 1);
 
 				// test begins here
-				log4jsConfig['levels']['fromWarn'] = 'INFO';
-				sut.configureLogger(log4jsConfig);
+				sut.configureLogger('INFO');
 
 				// now should log from info, warn, ..., but not debug or lower
 				sut.info('some info after setting INFO');
@@ -290,8 +264,7 @@ suite('ConsoleLog', function () {
 				assert.equal(systemConsoleLogSpy.callCount, 2);
 
 				// test begins here
-				log4jsConfig['levels']['fromWarn'] = 'ERROR';
-				sut.configureLogger(log4jsConfig);
+				sut.configureLogger('ERROR');
 
 				// now should not log warn but should continue logging error
 				sut.warn('some warn after setting ERROR');
@@ -304,7 +277,7 @@ suite('ConsoleLog', function () {
 
 	suite('#formaters', function () {
 		var sut;
-		var log4jsConfig, formatedText, dummyFormater;
+		var formatedText, dummyFormater;
 
 		setup(function () {
 			formatedText = 'Formated text';
@@ -314,12 +287,7 @@ suite('ConsoleLog', function () {
 				}
 			};
 			sinon.stub(FormaterFactory, 'getInstance').returns(dummyFormater);
-			log4jsConfig = {
-				"levels": {
-					"[all]": "INFO"
-				}
-			}
-			sut = new ConsoleLog('formaterTest', log2out.settings, log4jsConfig, FormaterFactory);
+			sut = new ConsoleLog('formaterTest', log2out.settings, 'INFO', FormaterFactory);
 		});
 
 		test('If a formater is set should log the text returned by the formater', function () {

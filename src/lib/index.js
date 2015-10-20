@@ -20,18 +20,18 @@ var defaultSettings = {
 
 var returnDummyLogger = false;
 
-function getLogger (name, settings, log4jsConfig) {
+function getLogger (name, settings, levelName) {
 	if (!settings) {
 		settings = defaultSettings;
 	}
-	if (!log4jsConfig) {
-		log4jsConfig = log4jsConfigReader.getDefaultConfig();
+	if (!levelName) {
+		levelName = log4jsConfigReader.getConfiguredLevel();
 	}
 
 	if (returnDummyLogger) {
 		return DummyLog(name);
 	}
-	return ConsoleLog(name, settings, log4jsConfig);
+	return ConsoleLog(name, settings, levelName);
 }
 
 function clearAppenders () {

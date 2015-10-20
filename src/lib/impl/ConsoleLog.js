@@ -4,9 +4,9 @@ var format = require('util').format;
 
 var levels = require('../levels');
 
-var ConsoleLog = function ConsoleLog (loggerName, settings, log4jsSettings, FormaterFactory) {
+var ConsoleLog = function ConsoleLog (loggerName, settings, levelName, FormaterFactory) {
 	if (!(this instanceof ConsoleLog)) {
-		return new ConsoleLog(loggerName, settings, log4jsSettings);
+		return new ConsoleLog(loggerName, settings, levelName);
 	}
 
 	if (!settings) {
@@ -16,15 +16,16 @@ var ConsoleLog = function ConsoleLog (loggerName, settings, log4jsSettings, Form
 	this.loggerName = loggerName || '';
 	this.settings = settings;
 
-	this.configureLogger(log4jsSettings);
+	this.configureLogger(levelName);
 
 	this.FormaterFactory = FormaterFactory || require('../formaters/FormaterFactory');
 	this.formater = null;
 };
 
-ConsoleLog.prototype.configureLogger = function (log4jsSettings) {
+ConsoleLog.prototype.configureLogger = function (levelName) {
 	var settings = this.settings;
-	this.level = calculateLevel(this.loggerName, log4jsSettings);
+	levelName = levelName || 'DEBUG';
+	this.level = levels[levelName.toUpperCase()] === undefined ? levels.DEBUG : levels[levelName.toUpperCase()];
 
 	this.trace = this.level <= levels.TRACE ? doLog.bind(this, settings.levels.TRACE, this.loggerName, settings.separator) : doNothing;
 	this.debug = this.level <= levels.DEBUG ? doLog.bind(this, settings.levels.DEBUG, this.loggerName, settings.separator) : doNothing;
@@ -56,20 +57,6 @@ function doLog (levelTxt, loggerName, separator) {
 function doNothing () {
 };
 
-function calculateLevel (loggerName, log4jsSettings) {
-	if (!log4jsSettings) {
-		return levels.DEBUG;
-	}
-	if (log4jsSettings.levels && log4jsSettings.levels[loggerName]) {
-		var levelForThis = log4jsSettings.levels[loggerName].toUpperCase();
-		return (levels[levelForThis] == null) ? levels.DEBUG : levels[levelForThis];
-	}
-	if (log4jsSettings.levels && log4jsSettings.levels['[all]']) {
-		var levelForThis = log4jsSettings.levels['[all]'].toUpperCase();
-		return (levels[levelForThis] == null) ? levels.DEBUG : levels[levelForThis];
-	}
-	return levels.DEBUG;
-}
 
 ConsoleLog.prototype.setFormater = function (formater) {
 	this.formater = this.FormaterFactory.getInstance(formater);
