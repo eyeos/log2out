@@ -1,3 +1,5 @@
+"use strict";
+
 var levels = {
 	TRACE: 0,
 	DEBUG: 1,

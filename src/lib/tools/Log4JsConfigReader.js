@@ -1,3 +1,5 @@
+"use strict";
+
 var node_fs = require('fs');
 var levels = require('../levels');
 
