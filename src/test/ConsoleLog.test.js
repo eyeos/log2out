@@ -76,8 +76,15 @@ suite('ConsoleLog', function () {
 			}
 		};
 
-		test('when level is "TRACE", only adequate calls use console.log', function () {
+		setup(function () {
 			systemConsoleLogSpy = sinon.spy(console, 'log');
+		});
+
+		teardown(function () {
+			systemConsoleLogSpy.restore();
+		});
+
+		test('when level is "TRACE", only adequate calls use console.log', function () {
 			sut = new ConsoleLog('fromTrace', log2out.settings, log4jsConfig);
 			assert.equal(sut.getLevelName(), 'TRACE');
 
@@ -99,13 +106,10 @@ suite('ConsoleLog', function () {
 
 			sut.fatal('something');
 			assert.equal(systemConsoleLogSpy.callCount, 6);
-
-			systemConsoleLogSpy.restore();
 		});
 
 
 		test('when level is "DEBUG", only adequate calls use console.log', function () {
-			systemConsoleLogSpy = sinon.spy(console, 'log');
 			sut = new ConsoleLog('fromDebug', log2out.settings, log4jsConfig);
 			assert.equal(sut.getLevelName(), 'DEBUG');
 
@@ -127,12 +131,9 @@ suite('ConsoleLog', function () {
 
 			sut.fatal('something');
 			assert.equal(systemConsoleLogSpy.callCount, 5);
-
-			systemConsoleLogSpy.restore();
 		});
 
 		test('when level is "INFO", only adequate calls use console.log', function () {
-			systemConsoleLogSpy = sinon.spy(console, 'log');
 			sut = new ConsoleLog('fromInfo', log2out.settings, log4jsConfig);
 
 			assert.equal(sut.getLevelName(), 'INFO');
@@ -155,12 +156,9 @@ suite('ConsoleLog', function () {
 
 			sut.fatal('something');
 			assert.equal(systemConsoleLogSpy.callCount, 4);
-
-			systemConsoleLogSpy.restore();
 		});
 
 		test('when level is "WARN", only adequate calls use console.log', function () {
-			systemConsoleLogSpy = sinon.spy(console, 'log');
 			sut = new ConsoleLog('fromWarn', log2out.settings, log4jsConfig);
 
 			assert.equal(sut.getLevelName(), 'WARN');
@@ -183,12 +181,9 @@ suite('ConsoleLog', function () {
 
 			sut.fatal('something');
 			assert.equal(systemConsoleLogSpy.callCount, 3);
-
-			systemConsoleLogSpy.restore();
 		});
 
 		test('when level is "ERR", only adequate calls use console.log', function () {
-			systemConsoleLogSpy = sinon.spy(console, 'log');
 			sut = new ConsoleLog('fromError', log2out.settings, log4jsConfig);
 
 			assert.equal(sut.getLevelName(), 'ERROR');
@@ -211,12 +206,9 @@ suite('ConsoleLog', function () {
 
 			sut.fatal('something');
 			assert.equal(systemConsoleLogSpy.callCount, 2);
-
-			systemConsoleLogSpy.restore();
 		});
 
 		test('when level is "FATAL", only adequate calls use console.log', function () {
-			systemConsoleLogSpy = sinon.spy(console, 'log');
 			sut = new ConsoleLog('fromFatal', log2out.settings, log4jsConfig);
 
 			assert.equal(sut.getLevelName(), 'FATAL');
@@ -239,12 +231,9 @@ suite('ConsoleLog', function () {
 
 			sut.fatal('something');
 			assert.equal(systemConsoleLogSpy.callCount, 1);
-
-			systemConsoleLogSpy.restore();
 		});
 
 		test('when level is "OFF", no one calls use console.log', function () {
-			systemConsoleLogSpy = sinon.spy(console, 'log');
 			sut = new ConsoleLog('fromOff', log2out.settings, log4jsConfig);
 
 			assert.equal(sut.getLevelName(), 'OFF');
@@ -267,8 +256,6 @@ suite('ConsoleLog', function () {
 
 			sut.fatal('something');
 			assert.equal(systemConsoleLogSpy.callCount, 0);
-
-			systemConsoleLogSpy.restore();
 		});
 
 	});
