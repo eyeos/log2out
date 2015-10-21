@@ -9,6 +9,7 @@ suite('Log4JsConfigReader', function () {
 	var sut;
 	var mkdirpSync;
 	var loggerName;
+	var watchCallback;
 
 	setup(function () {
 		fs = {
@@ -17,7 +18,10 @@ suite('Log4JsConfigReader', function () {
 			watch: function () {
 			}
 		};
-		sinon.stub(fs);
+		sinon.stub(fs, 'readFileSync');
+		sinon.stub(fs, 'watch', function (filename, options, cb) {
+			watchCallback = cb;
+		});
 		mkdirpSync = sinon.stub();
 		loggerName = 'fake loggername';
 	});
@@ -133,6 +137,21 @@ suite('Log4JsConfigReader', function () {
 		test('When env does not contain LOG4JS_CONFIG does not create parent folder', function () {
 			sut = getSut();
 			sinon.assert.notCalled(mkdirpSync);
+		});
+
+		test('When LOG4JS_CONFIG file changes calls self.configFileChangeHandler', function () {
+			sut = getSut(config_file);
+			var configFileChangeHandlerStub = sinon.stub(sut, 'configFileChangeHandler');
+			watchCallback('fake event', 'fake.log4js.config.json');
+			sinon.assert.calledWithExactly(configFileChangeHandlerStub);
+			sinon.assert.calledOn(configFileChangeHandlerStub, sut);
+		});
+
+		test('When a file different than the LOG4JS_CONFIG file changes does not call self.configFileChangeHandler', function () {
+			sut = getSut(config_file);
+			var configFileChangeHandlerStub = sinon.stub(sut, 'configFileChangeHandler');
+			watchCallback('fake event', 'some other file');
+			sinon.assert.notCalled(configFileChangeHandlerStub);
 		});
 	});
 });

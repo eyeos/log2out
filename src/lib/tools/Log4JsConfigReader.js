@@ -6,6 +6,7 @@ var mkdirp = require('mkdirp');
 var levels = require('../levels');
 
 function Log4JsConfigReader (loggerName, env, fs, mkdirpSync) {
+	var self = this;
 	this.loggerName = loggerName;
 	this.env = env || process.env;
 	this.fs = fs || node_fs;
@@ -19,6 +20,9 @@ function Log4JsConfigReader (loggerName, env, fs, mkdirpSync) {
 		var folder = path.dirname(this.filename);
 		this.mkdirpSync(folder);
 		this.fs.watch(folder, {persistent: false}, function (event, filename) {
+			if (filename == path.basename(self.filename)) {
+				self.configFileChangeHandler.call(self);
+			}
 		});
 	}
 }
@@ -29,6 +33,10 @@ Log4JsConfigReader.prototype.getConfig = function () {
 				'[all]': this.env.EYEOS_LOG_LEVEL || 'DEBUG'
 			}
 		};
+};
+
+Log4JsConfigReader.prototype.configFileChangeHandler = function () {
+
 };
 
 Log4JsConfigReader.prototype._getLog4jsConfigFromEnvar = function () {
