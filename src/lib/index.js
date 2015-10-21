@@ -33,6 +33,10 @@ function getLogger (name, settings, levelName, log4jsConfigReader) {
 	}
 	var logger = ConsoleLog(name, settings, levelName);
 
+	log4jsConfigReader.on('logLevelChanged', function (newLogLevel) {
+		logger.setLevelName(newLogLevel);
+	});
+
 	return logger;
 }
 
