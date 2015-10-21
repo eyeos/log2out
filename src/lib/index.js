@@ -4,8 +4,6 @@ var ConsoleLog = require('./impl/ConsoleLog');
 var DummyLog = require('./impl/DummyLog');
 var Log4jsConfigReader = require('./tools/Log4JsConfigReader');
 
-var log4jsConfigReader = new Log4jsConfigReader();
-
 var defaultSettings = {
 	levels: {
 		TRACE: '[TRACE]',
@@ -20,7 +18,9 @@ var defaultSettings = {
 
 var returnDummyLogger = false;
 
-function getLogger (name, settings, levelName) {
+function getLogger (name, settings, levelName, log4jsConfigReader) {
+	log4jsConfigReader = log4jsConfigReader || new Log4jsConfigReader();
+
 	if (!settings) {
 		settings = defaultSettings;
 	}
@@ -31,7 +31,9 @@ function getLogger (name, settings, levelName) {
 	if (returnDummyLogger) {
 		return DummyLog(name);
 	}
-	return ConsoleLog(name, settings, levelName);
+	var logger = ConsoleLog(name, settings, levelName);
+
+	return logger;
 }
 
 function clearAppenders () {
