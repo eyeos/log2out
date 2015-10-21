@@ -7,21 +7,13 @@ var Log4JsConfigReader = require('../lib/tools/Log4JsConfigReader');
 suite('Log4JsConfigReader', function () {
 	var fs;
 	var sut;
-	var toRestore = [];
 
 	setup(function () {
 		fs = {
 			readFileSync: function () {
 			}
 		};
-		toRestore.push(sinon.stub(fs));
-	});
-
-	teardown(function () {
-		//for (var i = 0; i < toRestore.length; i++) {
-		//	console.log('calling to restore() on ', i, toRestore[i]);
-		//	toRestore[i].restore();
-		//}
+		sinon.stub(fs);
 	});
 
 	suite('#getConfig without envars', function () {
