@@ -153,5 +153,40 @@ suite('Log4JsConfigReader', function () {
 			watchCallback('fake event', 'some other file');
 			sinon.assert.notCalled(configFileChangeHandlerStub);
 		});
+
+		suite('#configFileChangeHandler', function () {
+			var clock;
+
+			setup(function () {
+				sut = getSut(config_file);
+				clock = sinon.useFakeTimers();
+			});
+
+			teardown(function () {
+				clock.restore();
+			});
+
+			test('when called clears previous timeout if it exists', function () {
+				sut.timeoutId = 1;
+				sinon.stub(global, 'clearTimeout');
+				sut.configFileChangeHandler();
+				sinon.assert.calledWith(global.clearTimeout, 1);
+			});
+
+			test('when called setsTimeout', function () {
+				sinon.stub(global, 'setTimeout');
+				sut.configFileChangeHandler();
+				sinon.assert.calledWithExactly(global.setTimeout, sinon.match.func, 1000);
+			});
+
+			test('when the timeout expires it emits the new log level', function () {
+				var newLogLevel = 'a fake new log level';
+				sinon.stub(sut, 'emit');
+				sinon.stub(sut, 'getConfiguredLevel').returns(newLogLevel);
+				sut.configFileChangeHandler();
+				clock.tick(1000);
+				sinon.assert.calledWithExactly(sut.emit, 'logLevelChanged', newLogLevel);
+			});
+		});
 	});
 });

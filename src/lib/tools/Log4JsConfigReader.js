@@ -27,6 +27,9 @@ function Log4JsConfigReader (loggerName, env, fs, mkdirpSync) {
 	}
 }
 
+// inherit from EventEmitter to emit events (duh...)
+Log4JsConfigReader.prototype = Object.create(require('events').EventEmitter.prototype);
+
 Log4JsConfigReader.prototype.getConfig = function () {
 	return this._getLog4jsConfigFromEnvar() || {
 			'levels': {
@@ -36,7 +39,15 @@ Log4JsConfigReader.prototype.getConfig = function () {
 };
 
 Log4JsConfigReader.prototype.configFileChangeHandler = function () {
-
+	// as they may be multiple inotify events for a single action (when
+	// overwriting a file you get 2 events), and as you may get the 'changed'
+	// event even before it has finished, we wait a little and discard pending
+	// events if we receive a new one.
+	var self = this;
+	clearTimeout(this.timeoutId);
+	this.timeoutId = setTimeout(function () {
+		self.emit('logLevelChanged', self.getConfiguredLevel.call(self));
+	}, 1000);
 };
 
 Log4JsConfigReader.prototype._getLog4jsConfigFromEnvar = function () {
