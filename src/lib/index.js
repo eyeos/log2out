@@ -25,7 +25,7 @@ function getLogger (name, settings, levelName, log4jsConfigReader) {
 		settings = defaultSettings;
 	}
 	if (!levelName) {
-		levelName = log4jsConfigReader.getConfiguredLevel();
+		levelName = log4jsConfigReader.getConfiguredLevel(name);
 	}
 
 	if (returnDummyLogger) {
