@@ -6,6 +6,7 @@ var levels = require('../levels');
 function Log4JsConfigReader (env, fs) {
 	this.env = env || process.env;
 	this.fs = fs || node_fs;
+	this.filename = this.env['LOG4JS_CONFIG'];
 }
 
 Log4JsConfigReader.prototype.getConfig = function () {
@@ -17,12 +18,11 @@ Log4JsConfigReader.prototype.getConfig = function () {
 };
 
 Log4JsConfigReader.prototype._getLog4jsConfigFromEnvar = function () {
-	var filename = this.env.LOG4JS_CONFIG;
-	if (filename) {
+	if (this.filename) {
 		try {
-			return JSON.parse(this.fs.readFileSync(filename, "utf8"));
+			return JSON.parse(this.fs.readFileSync(this.filename, "utf8"));
 		} catch (err) {
-			console.log('[DEBUG] Log4JsConfigReader - specified LOG4JS_CONFIG (' + filename
+			console.log('[DEBUG] Log4JsConfigReader - specified LOG4JS_CONFIG (' + this.filename
 						+ ') file does not (yet) exist or has invalid (not JSON) contents');
 			return undefined;
 		}
