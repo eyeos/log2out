@@ -19,13 +19,13 @@ var defaultSettings = {
 var returnDummyLogger = false;
 
 function getLogger (name, settings, levelName, log4jsConfigReader) {
-	log4jsConfigReader = log4jsConfigReader || new Log4jsConfigReader();
+	log4jsConfigReader = log4jsConfigReader || new Log4jsConfigReader(name);
 
 	if (!settings) {
 		settings = defaultSettings;
 	}
 	if (!levelName) {
-		levelName = log4jsConfigReader.getConfiguredLevel(name);
+		levelName = log4jsConfigReader.getConfiguredLevel();
 	}
 
 	if (returnDummyLogger) {

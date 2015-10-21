@@ -8,6 +8,7 @@ suite('Log4JsConfigReader', function () {
 	var fs;
 	var sut;
 	var mkdirpSync;
+	var loggerName;
 
 	setup(function () {
 		fs = {
@@ -18,6 +19,7 @@ suite('Log4JsConfigReader', function () {
 		};
 		sinon.stub(fs);
 		mkdirpSync = sinon.stub();
+		loggerName = 'fake loggername';
 	});
 
 	suite('#getConfig without envars', function () {
@@ -29,7 +31,7 @@ suite('Log4JsConfigReader', function () {
 					'[all]': 'DEBUG'
 				}
 			};
-			sut = new Log4JsConfigReader(undefined, fs, mkdirpSync);
+			sut = new Log4JsConfigReader(loggerName, undefined, fs, mkdirpSync);
 		});
 
 		test('when called returns default config', function () {
@@ -52,7 +54,7 @@ suite('Log4JsConfigReader', function () {
 				}
 			};
 
-			sut = new Log4JsConfigReader(env, fs, mkdirpSync);
+			sut = new Log4JsConfigReader(loggerName, env, fs, mkdirpSync);
 		});
 
 		test('when called and log4js config file does not exist returns default config with EYEOS_LOG_LEVEL', function () {
@@ -79,18 +81,23 @@ suite('Log4JsConfigReader', function () {
 					"test": "INFO",
 					"[all]": "WARN"
 				}
-			}
-			sut = new Log4JsConfigReader(undefined, undefined, mkdirpSync);
+			};
+		});
+		function getSut(name) {
+			sut = new Log4JsConfigReader(name, undefined, undefined, mkdirpSync);
 			getConfigStub = sinon.stub(sut, 'getConfig');
 			getConfigStub.returns(log4jsConfig);
-		});
+			return sut;
+		}
 
 		test('level can be set with log4js-like configuration, default level is set in "[all]"', function () {
-			assert.equal(sut.getConfiguredLevel('whatever'), 'WARN');
+			sut = getSut(loggerName);
+			assert.equal(sut.getConfiguredLevel(), 'WARN');
 		});
 
 		test('level can be set with log4js-like configuration', function () {
-			assert.equal(sut.getConfiguredLevel('test'), 'INFO');
+			sut = getSut('test');
+			assert.equal(sut.getConfiguredLevel(), 'INFO');
 		});
 	});
 
@@ -105,7 +112,7 @@ suite('Log4JsConfigReader', function () {
 			env = {
 				LOG4JS_CONFIG: log4js_config_file
 			};
-			return new Log4JsConfigReader(env, fs, mkdirpSync);
+			return new Log4JsConfigReader(loggerName, env, fs, mkdirpSync);
 		}
 
 		test('When env contains LOG4JS_CONFIG creates parent folder', function () {

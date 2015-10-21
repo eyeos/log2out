@@ -5,7 +5,8 @@ var path = require('path');
 var mkdirp = require('mkdirp');
 var levels = require('../levels');
 
-function Log4JsConfigReader (env, fs, mkdirpSync) {
+function Log4JsConfigReader (loggerName, env, fs, mkdirpSync) {
+	this.loggerName = loggerName;
 	this.env = env || process.env;
 	this.fs = fs || node_fs;
 	this.mkdirpSync = mkdirpSync || mkdirp.sync;
@@ -43,7 +44,8 @@ Log4JsConfigReader.prototype._getLog4jsConfigFromEnvar = function () {
 	return undefined;
 };
 
-Log4JsConfigReader.prototype.getConfiguredLevel = function (loggerName) {
+Log4JsConfigReader.prototype.getConfiguredLevel = function () {
+	var loggerName = this.loggerName;
 	var defaultLevel = "DEBUG";
 
 	var log4jsSettings = this.getConfig();
