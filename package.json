@@ -4,7 +4,8 @@
   "description": "log to stdout",
   "main": "./src/lib/index.js",
   "dependencies": {
-    "internet-timestamp": "0.0.1"
+    "internet-timestamp": "0.0.1",
+    "mkdirp": "0.5.1"
   },
   "devDependencies": {
     "eyeos-gruntfile": "*",

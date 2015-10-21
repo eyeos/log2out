@@ -1,12 +1,25 @@
 "use strict";
 
 var node_fs = require('fs');
+var path = require('path');
+var mkdirp = require('mkdirp');
 var levels = require('../levels');
 
-function Log4JsConfigReader (env, fs) {
+function Log4JsConfigReader (env, fs, mkdirpSync) {
 	this.env = env || process.env;
 	this.fs = fs || node_fs;
+	this.mkdirpSync = mkdirpSync || mkdirp.sync;
 	this.filename = this.env['LOG4JS_CONFIG'];
+	if (this.filename) {
+		// we will watch the LOG4JS_CONFIG file for modifications to be able to change the loglevel
+		// on the fly. We are watching the parent folder (and creating it) because the file may not
+		// exist and you can not watch a non-existing filename. So, we need to watch the parent and
+		// only react when we have an event on the right filename. Btw, this alignment it's so cool
+		var folder = path.dirname(this.filename);
+		this.mkdirpSync(folder);
+		this.fs.watch(folder, {persistent: false}, function (event, filename) {
+		});
+	}
 }
 
 Log4JsConfigReader.prototype.getConfig = function () {
