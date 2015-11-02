@@ -55,8 +55,8 @@ Log4JsConfigReader.prototype._getLog4jsConfigFromEnvar = function () {
 		try {
 			return JSON.parse(this.fs.readFileSync(this.filename, "utf8"));
 		} catch (err) {
-			console.log('[DEBUG] Log4JsConfigReader - specified LOG4JS_CONFIG (' + this.filename
-						+ ') file does not (yet) exist or has invalid (not JSON) contents');
+			//console.log('[DEBUG] Log4JsConfigReader - specified LOG4JS_CONFIG (' + this.filename
+			//			+ ') file does not (yet) exist or has invalid (not JSON) contents');
 			return undefined;
 		}
 	}
